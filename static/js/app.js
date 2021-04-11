@@ -104,5 +104,9 @@ function buildPlot(sample) {
             panelBody.append("p").text(key[0] + ":" + key[1]);
         })
     });
+  }
+  function optionChanged(selectNew) {
+    updateMetadata(selectNew);
+    buildPlot(selectNew); 
   } 
   init();
