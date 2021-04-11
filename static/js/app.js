@@ -84,5 +84,25 @@ function buildPlot(sample) {
     // passing in graph data to render bar plot
     Plotly.newPlot("bar", data, layout);  
     });
-  }  
+  } 
+  // function to obtain metadata
+  function updateMetadata(sample) {
+    d3.json("data/samples.json").then((data) => {
+        // obtain Demographic Info for panel
+        var metadata = data.metadata;
+        var filterData = metadata.filter(sampleObject => sampleObject.id == sample);
+        // console.log(filterData);
+        var result = filterData[0];
+        // console.log(result);
+        var panelBody = d3.select("#sample-metadata");
+
+         // remove any children from the list before refreshing with new data
+         panelBody.html("");
+
+        // append Demographic Info for panel
+        Object.entries(result).forEach((key)=>{
+            panelBody.append("p").text(key[0] + ":" + key[1]);
+        })
+    });
+  } 
   init();
