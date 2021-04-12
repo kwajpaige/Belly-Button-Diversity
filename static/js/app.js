@@ -1,6 +1,6 @@
 var bellybuttonData;
 
-// initialize the data
+// initialize data
 function init(){
     // Dropdown Menu 
     var dropdownMenu = d3.select("#selDataset");
@@ -18,20 +18,16 @@ function init(){
 }
 
 function buildPlot(sample) {    
-    // Grab values from the json object to build the plots
+    // Grab values from the json object
     d3.json("data/samples.json").then((data) => {
     var samples = data.samples;
-    // var personData = data.samples;
+    
     var filterData = samples.filter(sampleObject => sampleObject.id == sample);
-    // var filterData = samples.filter(sampleObject => sampleObject.id == personData);
     var result = filterData[0];
     var sample_values = result.sample_values;
     var otu_ids = result.otu_ids;
     var otu_labels = result.otu_labels;
-    // console.log(result);
-    // console.log(sample_values);
-    // console.log(otu_ids);
-    // console.log(otu_labels);   
+    
     
     var trace1 = {
         x: otu_ids,
@@ -44,18 +40,15 @@ function buildPlot(sample) {
         colorscale:"Darkmint"
         }
     };
-     // get the top 10 OTUs in each individual
+     //  top 10 OTUs in each individual
     var sample_values_10 = result.sample_values.slice(0, 10).reverse();
-    // console.log(sample_values_10);
-    // get only top 10 otu ids for the plot OTU and reversing it. 
+    
     var OTU = (result.otu_ids.slice(0, 10)).reverse();
-    // get the otu id's to the desired form for the plot
+    
     var OTU_id = OTU.map(d => "OTU " + d)
-    // console.log(OTU_id);
-    //  get corresponding top 10 labels for each OTU
+    //  get top 10 labels for each OTU
     var labels = result.otu_labels.slice(0, 10).reverse();
-    // console.log(labels);
-
+   
     // create data variable for trace layout
     var data = [trace1];
     var layout = {
@@ -65,7 +58,7 @@ function buildPlot(sample) {
         xaxis: {title:"OTU ID"},
         margin: {t:20}
     };
-    // passing in graph data to render bubble plot
+    //Create Bubble plot
     Plotly.newPlot('bubble', data, layout); 
     var trace1 = {
         x: sample_values_10,
@@ -74,37 +67,33 @@ function buildPlot(sample) {
         type: "bar",
         orientation: "h"
     };
-    // create data variable for bar chart
+    // create bar chart
     var data = [trace1];
     var layout = {
         title: "Top Ten OTU's " +sample,
         margin: {l: 100, r: 100, t: 100, b: 100},
         font: { color: "#49a81d", family: "Arial, Helvetica, sans-serif" }
     }; 
-    // passing in graph data to render bar plot
+    
     Plotly.newPlot("bar", data, layout);  
     });
   } 
-  // function to obtain metadata
+  // obtain metadata
   function updateMetadata(sample) {
     d3.json("data/samples.json").then((data) => {
-        // obtain Demographic Info for panel
         var metadata = data.metadata;
         var filterData = metadata.filter(sampleObject => sampleObject.id == sample);
-        // console.log(filterData);
         var result = filterData[0];
-        // console.log(result);
         var panelBody = d3.select("#sample-metadata");
 
-         // remove any children from the list before refreshing with new data
          panelBody.html("");
 
-        // append Demographic Info for panel
         Object.entries(result).forEach((key)=>{
             panelBody.append("p").text(key[0] + ":" + key[1]);
         })
     });
   }
+  // Option Change Function
   function optionChanged(selectNew) {
     updateMetadata(selectNew);
     buildPlot(selectNew); 
